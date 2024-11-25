@@ -96,7 +96,9 @@ jobs:
           git sparse-checkout set --no-cone iPhoneOS${{ inputs.sdk_version }}.sdk
           git checkout
           echo "Contents of SDK directory after sparse checkout:"
-          ls -R
+          ls -R # Recursively list all files in the sdks directory
+          echo "Current directory:"
+          pwd # Print the working directory
           echo "Moving SDK files to THEOS/sdks directory"
           ls iPhoneOS${{ inputs.sdk_version }}.sdk # Verify the SDK file is present
           mv iPhoneOS${{ inputs.sdk_version }}.sdk $THEOS/sdks
