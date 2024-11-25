@@ -96,10 +96,10 @@ jobs:
           git sparse-checkout set --no-cone iPhoneOS${{ inputs.sdk_version }}.sdk
           git checkout
           echo "Contents of SDK directory after sparse checkout:"
-          ls
+          ls -R
           echo "Moving SDK files to THEOS/sdks directory"
-          mv *.sdk $THEOS/sdks
-        shell: bash
+          ls iPhoneOS${{ inputs.sdk_version }}.sdk # Verify the SDK file is present
+          mv iPhoneOS${{ inputs.sdk_version }}.sdk $THEOS/sdks
         env:
           THEOS: ${{ github.workspace }}/theos
 
