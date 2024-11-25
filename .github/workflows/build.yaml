@@ -26,7 +26,7 @@ jobs:
       - name: 🚚 Check out the Repository
         uses: actions/checkout@v4  # Updated to the latest version
         with:
-          repository: David735453/YTLitePlus
+          repository: YTLitePlus/YTLitePlus
           ref: main
           path: ./YTLitePlus
           submodules: recursive
