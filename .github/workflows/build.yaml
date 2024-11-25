@@ -26,7 +26,7 @@ jobs:
       - name: 🚚 Check out the Repository
         uses: actions/checkout@v4  # Updated to the latest version
         with:
-          repository: YTLitePlus/YTLitePlus
+          repository: David735453/YTLitePlus
           ref: main
           path: ./YTLitePlus
           submodules: recursive
@@ -94,6 +94,10 @@ jobs:
       - name: 📦 Build IPA
         working-directory: main
         run: |
+          if [ ! -d "main" ]; then
+            echo "The directory 'main' does not exist."
+            exit 1
+          fi
           sed -i "" "s|iphone:clang:16.5:14.0|iphone:clang:17.5:14.0|g" Makefile
           sed -i "" "s|iphone:latest:12.0|iphone:17.5:15.0|g" Tweaks/Alderis/Makefile
           gmake package
@@ -105,4 +109,5 @@ jobs:
           name: ${{ github.run_number }}
           files: main/packages/*.ipa
           draft: true
+
 
