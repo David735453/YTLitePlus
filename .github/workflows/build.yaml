@@ -1,0 +1,103 @@
+name: YTLitePlus CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      DECRYPTED_YOUTUBE_URL:
+        description: "The *decrypted* YouTube ipa (Provide Direct Download Link)."
+        default: ""
+        required: true
+        type: string
+
+jobs:
+  build:
+    name: Build YTLitePlus
+    runs-on: macos-latest
+    permissions:
+      contents: write
+    env:
+      THEOS: ${{ github.workspace }}/theos
+
+    steps:
+      - name: 💾 Install System Dependencies
+        run: |
+          brew install ldid-procursus make
+
+      - name: 🚚 Check out the Repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          repository: Mukul1127/YTLitePlus
+          path: main
+          submodules: recursive
+
+      - name: 🛠️ Prepare YouTube IPA
+        working-directory: main
+        run: |
+          wget "${{ inputs.DECRYPTED_YOUTUBE_URL }}" --no-verbose -O YouTube.zip
+          unzip -q YouTube.zip -d tmp
+          echo "YOUTUBE_VERSION=$(defaults read "$(pwd)/tmp/Payload/YouTube.app/Info" CFBundleVersion)" >> $GITHUB_ENV
+          rm -rf tmp/Payload/YouTube.app/_CodeSignature/CodeResources
+          rm -rf tmp/Payload/YouTube.app/PlugIns/*
+          cp -R Extensions/*.appex tmp/Payload/YouTube.app/PlugIns
+
+      - name: 🔍 Check cache
+        run: |
+          echo UPSTREAM_HEADS=`git ls-remote https://github.com/theos/theos | head -n 1 | cut -f 1`-`git ls-remote https://github.com/xybp888/iOS-SDKs | head -n 1 | cut -f 1` >> $GITHUB_ENV
+
+      - name: ♻️ Restore cache if available
+        id: cache
+        uses: actions/cache/restore@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        with:
+          path: ${{ github.workspace }}/theos
+          key: ${{ env.UPSTREAM_HEADS }}
+
+      - name: ⚙️ Setup Theos
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          repository: theos/theos
+          path: theos
+          submodules: recursive
+
+      - name: ⚙️ Setup iOS SDK
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          repository: xybp888/iOS-SDKs
+          path: theos/sdks
+          sparse-checkout: "iPhoneOS17.5.sdk"
+          sparse-checkout-cone-mode: false
+
+      - name: ♻️ Save cache if needed
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        with:
+          path: ${{ github.workspace }}/theos
+          key: ${{ env.UPSTREAM_HEADS }}
+
+      - name: ⚙️ Setup Theos Jailed
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          repository: qnblackcat/theos-jailed
+          path: theos-jailed
+          submodules: true
+
+      - name: 💾 Install Theos Jailed
+        working-directory: theos-jailed
+        run: |
+          ./install
+
+      - name: 📦 Build IPA
+        working-directory: main
+        run: |
+          sed -i "" "s|iphone:clang:16.5:14.0|iphone:clang:17.5:14.0|g" Makefile
+          sed -i "" "s|iphone:latest:12.0|iphone:17.5:15.0|g" Tweaks/Alderis/Makefile
+          gmake package
+
+      - name: 🚀 Publish Draft Release
+        uses: softprops/action-gh-release@9a28f2423fd7ba2781181bb13e8aba228027c4e9 # v2.0.8 + 5 Dependency Updates
+        with:
+          tag_name: ${{ github.run_number }}
+          name: ${{ github.run_number }}
+          files: main/packages/*.ipa
+          draft: true
