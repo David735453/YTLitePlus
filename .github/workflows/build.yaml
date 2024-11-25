@@ -26,13 +26,18 @@ jobs:
       - name: 🚚 Check out the Repository
         uses: actions/checkout@v4  # Updated to the latest version
         with:
-          repository: David735453/YTLitePlus
+          repository: YTLitePlus/YTLitePlus
           ref: main
           path: ./YTLitePlus
           submodules: recursive
 
+      - name: Verify Checkout
+        run: |
+          echo "Listing contents of YTLitePlus directory after checkout:"
+          ls ./YTLitePlus
+
       - name: 🛠️ Prepare YouTube IPA
-        working-directory: main
+        working-directory: ./YTLitePlus/main  # Adjusted to match the checkout path
         run: |
           wget "${{ inputs.DECRYPTED_YOUTUBE_URL }}" --no-verbose -O YouTube.zip
           unzip -q YouTube.zip -d tmp
@@ -49,7 +54,7 @@ jobs:
         id: cache
         uses: actions/cache@v4  # Updated to the latest version
         with:
-          path: ${{ github.workspace }}/theos
+          path: $THEOS
           key: ${{ env.UPSTREAM_HEADS }}
 
       - name: ⚙️ Setup Theos
@@ -75,7 +80,7 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/cache@v4  # Updated to the latest version
         with:
-          path: ${{ github.workspace }}/theos
+          path: $THEOS
           key: ${{ env.UPSTREAM_HEADS }}
 
       - name: ⚙️ Setup Theos Jailed
@@ -92,10 +97,11 @@ jobs:
           ./install
 
       - name: 📦 Build IPA
-        working-directory: main
+        working-directory: ./YTLitePlus/main  # Adjusted to match the checkout path
         run: |
-          if [ ! -d "main" ]; then
-            echo "The directory 'main' does not exist."
+          echo "Current directory: $(pwd)"
+          if [ ! -d "./YTLitePlus/main" ]; then
+            echo "The directory './YTLitePlus/main' does not exist."
             exit 1
           fi
           sed -i "" "s|iphone:clang:16.5:14.0|iphone:clang:17.5:14.0|g" Makefile
@@ -107,7 +113,5 @@ jobs:
         with:
           tag_name: ${{ github.run_number }}
           name: ${{ github.run_number }}
-          files: main/packages/*.ipa
+          files: ./YTLitePlus/main/packages/*.ipa
           draft: true
-
-
