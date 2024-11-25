@@ -12,7 +12,7 @@ on:
 jobs:
   build:
     name: Build YTLitePlus
-    runs-on: macos-latest
+    runs-on: macos-15  # Updated to the latest macOS version
     permissions:
       contents: write
     env:
@@ -24,10 +24,10 @@ jobs:
           brew install ldid-procursus make
 
       - name: 🚚 Check out the Repository
-        uses: actions/checkout@v2  # Use latest stable version
+        uses: actions/checkout@v4  # Updated to the latest version
         with:
           repository: David735453/YTLitePlus
-          ref: main  # Explicitly specify the branch name
+          ref: main
           path: ./YTLitePlus
           submodules: recursive
 
@@ -47,42 +47,42 @@ jobs:
 
       - name: ♻️ Restore cache if available
         id: cache
-        uses: actions/cache@v2  # Use latest stable version
+        uses: actions/cache@v4  # Updated to the latest version
         with:
           path: ${{ github.workspace }}/theos
           key: ${{ env.UPSTREAM_HEADS }}
 
       - name: ⚙️ Setup Theos
         if: steps.cache.outputs.cache-hit != 'true'
-        uses: actions/checkout@v2  # Use latest stable version
+        uses: actions/checkout@v4  # Updated to the latest version
         with:
           repository: theos/theos
-          ref: master  # Explicitly specify the branch name if needed
+          ref: master
           path: theos
           submodules: recursive
 
       - name: ⚙️ Setup iOS SDK
         if: steps.cache.outputs.cache-hit != 'true'
-        uses: actions/checkout@v2  # Use latest stable version
+        uses: actions/checkout@v4  # Updated to the latest version
         with:
           repository: xybp888/iOS-SDKs
-          ref: master  # Explicitly specify the branch name if needed
+          ref: master
           path: theos/sdks
           sparse-checkout: "iPhoneOS17.5.sdk"
           sparse-checkout-cone-mode: false
 
       - name: ♻️ Save cache if needed
         if: steps.cache.outputs.cache-hit != 'true'
-        uses: actions/cache@v2  # Use latest stable version
+        uses: actions/cache@v4  # Updated to the latest version
         with:
           path: ${{ github.workspace }}/theos
           key: ${{ env.UPSTREAM_HEADS }}
 
       - name: ⚙️ Setup Theos Jailed
-        uses: actions/checkout@v2  # Use latest stable version
+        uses: actions/checkout@v4  # Updated to the latest version
         with:
           repository: qnblackcat/theos-jailed
-          ref: master  # Explicitly specify the branch name if needed
+          ref: master
           path: theos-jailed
           submodules: true
 
@@ -99,7 +99,7 @@ jobs:
           gmake package
 
       - name: 🚀 Publish Draft Release
-        uses: softprops/action-gh-release@v2  # Use latest stable version
+        uses: softprops/action-gh-release@v2  # Updated to the latest version
         with:
           tag_name: ${{ github.run_number }}
           name: ${{ github.run_number }}
