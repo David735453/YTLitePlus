@@ -24,10 +24,10 @@ jobs:
           brew install ldid-procursus make
 
       - name: 🚚 Check out the Repository
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@v2  # Use latest stable version
         with:
           repository: David735453/YTLitePlus
-          ref: main
+          ref: main  # Explicitly specify the branch name
           path: ./YTLitePlus
           submodules: recursive
 
@@ -47,39 +47,42 @@ jobs:
 
       - name: ♻️ Restore cache if available
         id: cache
-        uses: actions/cache/restore@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        uses: actions/cache@v2  # Use latest stable version
         with:
           path: ${{ github.workspace }}/theos
           key: ${{ env.UPSTREAM_HEADS }}
 
       - name: ⚙️ Setup Theos
         if: steps.cache.outputs.cache-hit != 'true'
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@v2  # Use latest stable version
         with:
           repository: theos/theos
+          ref: master  # Explicitly specify the branch name if needed
           path: theos
           submodules: recursive
 
       - name: ⚙️ Setup iOS SDK
         if: steps.cache.outputs.cache-hit != 'true'
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@v2  # Use latest stable version
         with:
           repository: xybp888/iOS-SDKs
+          ref: master  # Explicitly specify the branch name if needed
           path: theos/sdks
           sparse-checkout: "iPhoneOS17.5.sdk"
           sparse-checkout-cone-mode: false
 
       - name: ♻️ Save cache if needed
         if: steps.cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        uses: actions/cache@v2  # Use latest stable version
         with:
           path: ${{ github.workspace }}/theos
           key: ${{ env.UPSTREAM_HEADS }}
 
       - name: ⚙️ Setup Theos Jailed
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@v2  # Use latest stable version
         with:
           repository: qnblackcat/theos-jailed
+          ref: master  # Explicitly specify the branch name if needed
           path: theos-jailed
           submodules: true
 
@@ -96,9 +99,10 @@ jobs:
           gmake package
 
       - name: 🚀 Publish Draft Release
-        uses: softprops/action-gh-release@9a28f2423fd7ba2781181bb13e8aba228027c4e9 # v2.0.8 + 5 Dependency Updates
+        uses: softprops/action-gh-release@v2  # Use latest stable version
         with:
           tag_name: ${{ github.run_number }}
           name: ${{ github.run_number }}
           files: main/packages/*.ipa
           draft: true
+
