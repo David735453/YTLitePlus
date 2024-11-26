@@ -101,6 +101,14 @@ jobs:
         run: |
           gmake clean
 
+      - name: Verify FLEX Directory
+        working-directory: ./YTLitePlus
+        run: |
+          if [ ! -d "Tweaks/FLEX" ]; then
+            echo "The directory 'Tweaks/FLEX' does not exist."
+            exit 1
+          fi
+
       - name: 📦 Build IPA
         working-directory: ./YTLitePlus  # Adjusted to match the checkout path
         run: |
