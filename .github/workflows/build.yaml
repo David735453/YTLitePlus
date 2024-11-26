@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: 💾 Install System Dependencies
         run: |
-          brew install ldid-procursus make
+          brew install ldid-procursus make swiftlint
 
       - name: 🚚 Check out the Repository
         uses: actions/checkout@v4  # Updated to the latest version
@@ -97,10 +97,6 @@ jobs:
         working-directory: theos-jailed
         run: |
           ./install
-
-      - name: 🛠️ Install SwiftLint
-        run: |
-          brew install swiftlint
 
       - name: 📦 Clean Build Environment
         run: |
