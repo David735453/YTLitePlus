@@ -32,9 +32,11 @@ jobs:
 
       - name: Verify Checkout
         run: |
-          echo "Listing contents of the directory after checkout:"
+          echo "Listing contents of the working directory after checkout:"
           ls -la
           echo "Current directory: $(pwd)"
+          echo "Listing contents of YTLitePlus directory:"
+          ls -la YTLitePlus
           echo "Initial Git Status:"
           git status
 
