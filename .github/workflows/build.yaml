@@ -29,7 +29,11 @@ jobs:
           repository: David735453/YTLitePlus
           ref: main
           path: ./YTLitePlus
-          submodules: recursive
+          submodules: recursive  # Ensure all submodules are initialized
+
+      - name: Initialize and Update Submodules
+        run: |
+          git submodule update --init --recursive
 
       - name: Verify Checkout
         run: |
@@ -95,6 +99,10 @@ jobs:
         working-directory: theos-jailed
         run: |
           ./install
+
+      - name: 🛠️ Install SwiftLint
+        run: |
+          brew install swiftlint
 
       - name: 📦 Clean Build Environment
         working-directory: ./YTLitePlus
