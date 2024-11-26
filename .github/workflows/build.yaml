@@ -35,16 +35,12 @@ jobs:
           echo "Listing contents of the working directory after checkout:"
           ls -la
           echo "Current directory: $(pwd)"
-          echo "Listing contents of YTLitePlus directory:"
-          ls -la YTLitePlus
           echo "Initial Git Status:"
           git status
 
       - name: 🛠️ Prepare YouTube IPA
         run: |
-          echo "Current directory before cd: $(pwd)"
-          cd YTLitePlus
-          echo "Current directory after cd: $(pwd)"
+          echo "Current directory before download: $(pwd)"
           wget "${{ inputs.DECRYPTED_YOUTUBE_URL }}" --no-verbose -O YouTube.zip
           unzip -q YouTube.zip -d tmp
           echo "YOUTUBE_VERSION=$(defaults read "$(pwd)/tmp/Payload/YouTube.app/Info" CFBundleVersion)" >> $GITHUB_ENV
@@ -108,12 +104,10 @@ jobs:
 
       - name: 📦 Clean Build Environment
         run: |
-          cd YTLitePlus
           gmake clean
 
       - name: Verify FLEX Directory
         run: |
-          cd YTLitePlus
           if [ ! -d "Tweaks/FLEX" ]; then
             echo "The directory 'Tweaks/FLEX' does not exist."
             exit 1
@@ -121,7 +115,6 @@ jobs:
 
       - name: 📦 Build IPA
         run: |
-          cd YTLitePlus
           echo "Current directory: $(pwd)"
           sed -i "" "s|iphone:clang:16.5:14.0|iphone:clang:17.5:14.0|g" Makefile
           sed -i "" "s|iphone:latest:12.0|iphone:17.5:15.0|g" Tweaks/Alderis/Makefile
@@ -132,5 +125,5 @@ jobs:
         with:
           tag_name: ${{ github.run_number }}
           name: ${{ github.run_number }}
-          files: YTLitePlus/packages/*.ipa
+          files: packages/*.ipa
           draft: true
