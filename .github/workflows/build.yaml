@@ -96,6 +96,11 @@ jobs:
         run: |
           ./install
 
+      - name: 📦 Clean Build Environment
+        working-directory: ./YTLitePlus
+        run: |
+          gmake clean
+
       - name: 📦 Build IPA
         working-directory: ./YTLitePlus  # Adjusted to match the checkout path
         run: |
@@ -111,3 +116,4 @@ jobs:
           name: ${{ github.run_number }}
           files: ./YTLitePlus/packages/*.ipa
           draft: true
+
