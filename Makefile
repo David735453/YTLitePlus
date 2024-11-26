@@ -68,3 +68,8 @@ before-all::
 			$(PRINT_FORMAT_ERROR) "Failed to extract YTLite"; exit 1; \
 		fi; \
 	fi
+
+
+CFLAGS += -stdlib=libc++
+CFLAGS += -Wno-module-import-in-extern-c
+CFLAGS += -Wno-c++11-narrowing
