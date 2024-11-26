@@ -31,14 +31,13 @@ jobs:
           path: ./YTLitePlus
           submodules: recursive  # Ensure all submodules are initialized
 
-      - name: Initialize and Update Submodules
-        run: |
-          git submodule update --init --recursive
-
       - name: Verify Checkout
         run: |
           echo "Listing contents of YTLitePlus directory after checkout:"
           ls ./YTLitePlus
+          echo "Current directory: $(pwd)"
+          echo "Initial Git Status:"
+          git status
 
       - name: 🛠️ Prepare YouTube IPA
         working-directory: ./YTLitePlus  # Adjusted to match the checkout path
