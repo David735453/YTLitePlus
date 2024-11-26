@@ -40,7 +40,9 @@ jobs:
 
       - name: 🛠️ Prepare YouTube IPA
         run: |
+          echo "Current directory before cd: $(pwd)"
           cd YTLitePlus
+          echo "Current directory after cd: $(pwd)"
           wget "${{ inputs.DECRYPTED_YOUTUBE_URL }}" --no-verbose -O YouTube.zip
           unzip -q YouTube.zip -d tmp
           echo "YOUTUBE_VERSION=$(defaults read "$(pwd)/tmp/Payload/YouTube.app/Info" CFBundleVersion)" >> $GITHUB_ENV
