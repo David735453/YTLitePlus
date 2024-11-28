@@ -23,6 +23,7 @@ jobs:
       - name: 💾 Install System Dependencies
         run: |
           brew install ldid-procursus make swiftlint
+          export CFLAGS="-fmodules -fcxx-modules -Wno-module-import-in-extern-c -Wno-c++11-narrowing"
 
       - name: 🚚 Check out the Repository
         uses: actions/checkout@v4
