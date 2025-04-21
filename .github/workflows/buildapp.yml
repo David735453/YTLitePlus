@@ -8,7 +8,7 @@ on:
     inputs:
       sdk_version:
         description: "iOS SDK Version"
-        default: "17.5"
+        default: "18"
         required: true
         type: string
       decrypted_youtube_url:
@@ -23,7 +23,7 @@ on:
         type: string
       app_name:
         description: "Modify the app name"
-        default: "YouTube"
+        default: "YTLite+"
         required: true
         type: string
       commit_id:
@@ -38,12 +38,12 @@ on:
         type: boolean
       catbox_upload:
         description: "Upload iPA to Catbox.moe (URL)"
-        default: false
+        default: true
         required: false
         type: boolean
       create_release:
         description: "Create a draft release (Private)"
-        default: false
+        default: true
         required: false
         type: boolean
 
